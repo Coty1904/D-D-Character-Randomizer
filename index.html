@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randomizador de Personajes - D&D</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="IMG/icon.png">
+    <script src="java.js" defer></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>D&D Character Randomizer</h1>
+    
+    <div class="form-group">
+        <label for="level-select">Nivel del personaje:</label>
+        <select id="level-select">
+            <script>
+                for (let i = 1; i <= 20; i++) {
+                    document.write(`<option value="${i}">Nivel ${i}</option>`);
+                }
+            </script>
+        </select>
+    </div>
+
+    <button id="generate-btn">Generar Personaje</button>
+
+    <div class="result-box" id="result-box">
+        <div class="result-item">
+            <span class="label-result">Nivel</span>
+            <span class="value-result" id="res-level">-</span>
+        </div>
+        <div class="result-item">
+            <span class="label-result">Raza</span>
+            <span class="value-result" id="res-race">-</span>
+        </div>
+        <div class="result-item" id="container-subrace">
+            <span class="label-result">Subraza</span>
+            <span class="value-result" id="res-subrace">-</span>
+        </div>
+        <div class="result-item">
+            <span class="label-result">Clase</span>
+            <span class="value-result" id="res-class">-</span>
+        </div>
+        <div class="result-item" id="container-subclass">
+            <span class="label-result">Subclase</span>
+            <span class="value-result" id="res-subclass">-</span>
+        </div>
+        <div class="result-item">
+            <span class="label-result">Trasfondo</span>
+            <span class="value-result" id="res-background">-</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="custom-file-upload">
+            <input type="file" id="csv-file" accept=".csv" multiple>
+            <span>📂 Cargar Libros (.csv)</span>
+        </label>
+    </div>
+
+    <div class="file-list-container">
+        <label>Libros activos en el pool:</label>
+        <ul id="loaded-files-list">
+            <li class="empty-list-msg">Ningún libro cargado todavía.</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

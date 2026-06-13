@@ -1,0 +1,245 @@
+:root {
+    --bg-color: #1a1a1a;
+    --card-bg: #2d2d2d;
+    --accent-color: #ff3e3e;
+    --text-color: #ffffff;
+    --text-secondary: #b3b3b3;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 750px; /* Aumentado de 500px a 750px para dar espacio a la tabla horizontal */
+    border: 1px solid #444;
+}
+
+h1 {
+    text-align: center;
+    color: var(--accent-color);
+    margin-top: 0;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    font-weight: bold;
+    color: var(--text-secondary);
+}
+
+select {
+    background-color: #1a1a1a;
+    color: var(--text-color);
+    border: 1px solid #555;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+}
+
+select:focus {
+    border-color: var(--accent-color);
+}
+
+button {
+    width: 100%;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: #cc2929;
+}
+
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    color: #888;
+}
+
+/* Ocultar el input nativo */
+.custom-file-upload input[type="file"] {
+    display: none;
+}
+
+/* Botón de carga estilizado a ancho completo */
+.custom-file-upload {
+    display: block; /* Cambiado a block para ocupar el 100% */
+    box-sizing: border-box;
+    width: 100%;
+    background-color: #1a1a1a;
+    color: var(--text-color);
+    border: 2px dashed #555;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.custom-file-upload:hover {
+    border-color: var(--accent-color);
+    background-color: #252525;
+}
+
+/* Lista de archivos CSV cargados y su espaciado inferior */
+.file-list-container {
+    margin-top: 10px;
+    margin-bottom: 25px; /* Espacio leve y controlado antes de la selección de nivel y el botón generar */
+}
+
+.file-list-container label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+}
+
+#loaded-files-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#loaded-files-list li {
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: fadeIn 0.3s ease;
+}
+
+#loaded-files-list li::before {
+    content: "📖";
+}
+
+#loaded-files-list li.empty-list-msg {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 0;
+}
+
+#loaded-files-list li.empty-list-msg::before {
+    content: "";
+}
+
+/* =========================================================================
+   TABLA HORIZONTAL CORREGIDA (TÍTULOS ALINEADOS)
+   ========================================================================= */
+.result-box {
+    margin-top: 25px;
+    margin-bottom: 30px; /* Espacio extra abajo de la tabla antes de lo que siga */
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-color);
+    
+    display: none; /* Cambiar a flex desde JS al generar */
+    justify-content: space-between;
+    align-items: flex-start; /* Alinea los bloques arriba de todo */
+    gap: 15px;
+}
+
+/* Cada columna de la tabla */
+.result-item {
+    margin-bottom: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* Hace que el título se quede arriba y el valor abajo */
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    min-width: 90px;
+}
+
+/* Títulos de la tabla - Ahora todos perfectamente nivelados */
+.label-result {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 6px;
+    min-height: 18px; /* Altura mínima fija para forzar que todos midan lo mismo */
+}
+
+/* Valores de la tabla */
+.value-result {
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.05rem;
+    display: block;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+/* =========================================================================
+   BOTÓN DE CARGA (CON ESPACIADO RESPECTO A LA TABLA)
+   ========================================================================= */
+.custom-file-upload {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    background-color: #1a1a1a;
+    color: var(--text-color);
+    border: 2px dashed #555;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    
+    margin-top: 35px; /* <- Separación clave para que no se pegue a la tabla de resultados de arriba */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

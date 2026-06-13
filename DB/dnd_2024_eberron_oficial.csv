@@ -1,0 +1,16 @@
+Tipo,Nombre,Dependencia
+Clase,Artificiero,
+Subclase,Alquimista,Artificiero
+Subclase,Armero,Artificiero
+Subclase,Artillero,Artificiero
+Subclase,Herrero de Batalla,Artificiero
+Raza,Forjado,
+Raza,Cambiante,
+Raza,Kalashtar,
+Raza,Mutador,
+Trasfondo,Agente de las Casas de la Marca,
+Trasfondo,Inquisitivo de Sharn,
+Trasfondo,Graduado de Morgrave,
+Trasfondo,Veterano de la Última Guerra,
+Trasfondo,Cazador de Cazarrecompensas,
+Trasfondo,Tripulante de Barco Volador,
