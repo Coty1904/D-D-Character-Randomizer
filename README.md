@@ -35,3 +35,13 @@ Subclase,Escuela de Evocación,Mago
 Raza,Elfo,
 Subraza,Alto Elfo,Elfo
 Trasfondo,Acólito,
+```
+## 🛠️ Tecnologías utilizadas
+HTML5: Estructura limpia y semántica.
+
+CSS3: Estructura responsiva basada en CSS Flexbox, variables personalizadas y estética oscura con acentos rojos.
+
+JavaScript Moderno (Vanilla JS): File API, Promesas (Promise.all) para carga múltiple asíncrona y manipulación dinámica del DOM.
+
+# ✒️ Autor
+Coty_20 - Coty1904
