@@ -31,11 +31,23 @@ Si querés expandir tu base de datos con nuevos suplementos oficiales o homebrew
 
 ```csv
 Tipo,Nombre,Dependencia
-Clase,Artificiero,Inteligencia-Constitución
-Subclase,Alquimista,Artificiero
+Clase,Bárbaro,Fuerza-Constitución
+Subclase,Senda del Berserker,Bárbaro
+Subclase,Senda del Corazón Salvaje,Bárbaro
+Subclase,Senda del Árbol del Mundo,Bárbaro
+Subclase,Senda del Zelote,Bárbaro
+Clase,Bardo,Carisma-Destreza
+Subclase,Colegio del Baile,Bardo
+Subclase,Colegio del Glamour,Bardo
+Subclase,Colegio del Saber,Bardo
+Subclase,Colegio of Valor,Bardo
 Raza,Forjado,
+Raza,Elfo,
+Subraza,Drow,Elfo
+Subraza,Alto Elfo,Elfo
+Subraza,Elfo de los Bosques,Elfo
 Trasfondo,Heredero de la Casa Cannith,Fuerza-Destreza-Inteligencia
-Inquisitivo,Constitución-Inteligencia-Carisma
+Trasfondo,Inquisitivo,Constitución-Inteligencia-Carisma
 ```
 
 *Nota sobre Trasfondos:* Al separar los atributos con guiones (`-`) en la columna de dependencia, el motor de JavaScript los parseará automáticamente como aptos para recibir los incrementos de dote (+2/+1).
