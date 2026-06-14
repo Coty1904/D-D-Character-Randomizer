@@ -29,14 +29,14 @@ El proyecto cuenta con una carpeta llamada `DB/` donde se almacenan los archivos
 ### 🔮 Escalabilidad del CSV
 Si querés expandir tu base de datos con nuevos suplementos oficiales o homebrews personalizados, solo tenés que crear un archivo `.csv` que respete rigurosamente esta estructura de cabecera y dependencias:
 
-'''csv
+```csv
 Tipo,Nombre,Dependencia
 Clase,Artificiero,Inteligencia-Constitución
 Subclase,Alquimista,Artificiero
 Raza,Forjado,
 Trasfondo,Heredero de la Casa Cannith,Fuerza-Destreza-Inteligencia
 Inquisitivo,Constitución-Inteligencia-Carisma
-'''
+```
 
 *Nota sobre Trasfondos:* Al separar los atributos con guiones (`-`) en la columna de dependencia, el motor de JavaScript los parseará automáticamente como aptos para recibir los incrementos de dote (+2/+1).
 
