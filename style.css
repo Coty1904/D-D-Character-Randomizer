@@ -25,7 +25,7 @@ body {
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     width: 100%;
-    max-width: 750px; /* Aumentado de 500px a 750px para dar espacio a la tabla horizontal */
+    max-width: 950px; /* ¡Aumentado a 950px para albergar los 6 datos en la misma fila! */
     border: 1px solid #444;
 }
 
@@ -168,55 +168,89 @@ button:disabled {
 }
 
 /* =========================================================================
-   TABLA HORIZONTAL CORREGIDA (TÍTULOS ALINEADOS)
+   TABLA HORIZONTAL DE 6 COLUMNAS CON ESTADÍSTICAS ABAJO
    ========================================================================= */
 .result-box {
     margin-top: 25px;
-    margin-bottom: 30px; /* Espacio extra abajo de la tabla antes de lo que siga */
+    margin-bottom: 30px;
     padding: 20px;
     background-color: #1a1a1a;
     border-radius: 8px;
     border-left: 4px solid var(--accent-color);
     
-    display: none; /* Cambiar a flex desde JS al generar */
-    justify-content: space-between;
-    align-items: flex-start; /* Alinea los bloques arriba de todo */
-    gap: 15px;
+    display: none; /* Recordá cambiar a 'grid' en tu JS al generar */
+    grid-template-columns: repeat(6, 1fr); /* ¡Cambiado a 6 columnas iguales! */
+    row-gap: 20px; 
+    column-gap: 12px; 
 }
 
-/* Cada columna de la tabla */
+/* Cada columna de la tabla horizontal (Nivel, Raza, etc.) */
 .result-item {
     margin-bottom: 0;
-    flex: 1;
     display: flex;
-    flex-direction: column; /* Hace que el título se quede arriba y el valor abajo */
+    flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     text-align: center;
-    min-width: 90px;
 }
 
-/* Títulos de la tabla - Ahora todos perfectamente nivelados */
+/* Títulos de la tabla horizontal */
 .label-result {
     color: var(--text-secondary);
-    font-size: 0.8rem;
+    font-size: 0.75rem; /* Achicado un pelito para que entre mejor en pantallas chicas */
     text-transform: uppercase;
     display: block;
     width: 100%;
     margin-bottom: 10px;
     border-bottom: 1px solid #333;
     padding-bottom: 6px;
-    min-height: 18px; /* Altura mínima fija para forzar que todos midan lo mismo */
+    min-height: 18px;
 }
 
-/* Valores de la tabla */
+/* Valores de la tabla horizontal */
 .value-result {
     font-weight: bold;
     color: #fff;
-    font-size: 1.05rem;
+    font-size: 1rem; /* Ajustado sutilmente para evitar cortes abruptos */
     display: block;
     word-break: break-word;
     line-height: 1.3;
+}
+
+/* Contenedor de estadísticas: Ahora se expande sobre las 6 columnas */
+.stats-container {
+    grid-column: 1 / span 6; /* Abarca las 6 columnas de ancho de la tabla */
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    border-top: 1px dashed #333;
+    padding-top: 20px;
+}
+
+/* Las cajitas individuales de las características (FUE, DES, etc.) */
+.stat-block {
+    background-color: #252525;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    flex: 1;
+    min-width: 50px;
+    box-sizing: border-box;
+}
+
+.stat-block span {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.stat-block strong {
+    font-size: 1.2rem;
+    color: var(--accent-color);
 }
 
 /* =========================================================================

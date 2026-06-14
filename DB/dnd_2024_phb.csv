@@ -1,60 +1,60 @@
 Tipo,Nombre,Dependencia
-Clase,Bárbaro,
+Clase,Bárbaro,Fuerza-Constitución
 Subclase,Senda del Berserker,Bárbaro
 Subclase,Senda del Corazón Salvaje,Bárbaro
 Subclase,Senda del Árbol del Mundo,Bárbaro
 Subclase,Senda del Zelote,Bárbaro
-Clase,Bardo,
+Clase,Bardo,Carisma-Destreza
 Subclase,Colegio del Baile,Bardo
 Subclase,Colegio del Glamour,Bardo
 Subclase,Colegio del Saber,Bardo
 Subclase,Colegio of Valor,Bardo
-Clase,Clérigo,
+Clase,Clérigo,Sabiduría-Constitución
 Subclase,Dominio de la Vida,Clérigo
 Subclase,Dominio de la Luz,Clérigo
 Subclase,Dominio del Engaño,Clérigo
 Subclase,Dominio de la Guerra,Clérigo
-Clase,Druida,
+Clase,Druida,Sabiduría-Constitución
 Subclase,Círculo de la Tierra,Druida
 Subclase,Círculo de la Luna,Druida
 Subclase,Círculo del Mar,Druida
 Subclase,Círculo de las Estrellas,Druida
-Clase,Guerrero,
+Clase,Guerrero,Fuerza-Destreza
 Subclase,Maestro de Batalla,Guerrero
 Subclase,Campeón,Guerrero
 Subclase,Caballero Eldritch,Guerrero
 Subclase,Guerrero Psiónico,Guerrero
-Clase,Monje,
+Clase,Monje,Destreza-Sabiduría
 Subclase,Guerrero de la Misericordia,Monje
-Subclase,Guerrero de la Sombra,Monje
-Subclase,Guerrero de los Elementos,Monje
-Subclase,Guerrero de la Mano Abierta,Monje
-Clase,Paladín,
+Subclase,Senda de la Mano Abierta,Monje
+Subclase,Senda de la Sombra,Monje
+Subclase,Senda de los Cuatro Elementos,Monje
+Clase,Paladín,Fuerza-Carisma
 Subclase,Juramento de Devoción,Paladín
-Subclase,Juramento de Gloria,Paladín
-Subclase,Juramento de los Ancestros,Paladín
+Subclase,Juramento de la Gloria,Paladín
+Subclase,Juramento de los Antiguos,Paladín
 Subclase,Juramento de Venganza,Paladín
-Clase,Explorador,
-Subclase,Maestro de las Bestias,Explorador
-Subclase,Caminante de las Hadas,Explorador
-Subclase,Acechador de las Sombras,Explorador
+Clase,Explorador,Destreza-Sabiduría
 Subclase,Cazador,Explorador
-Clase,Pícaro,
-Subclase,Tricahue Arcano,Pícaro
+Subclase,Cazador de la Envidia,Explorador
+Subclase,Señor de las Bestias,Explorador
+Subclase,Vagabundo Fey,Explorador
+Clase,Pícaro,Destreza-Carisma
+Subclase,Embaucador Arcano,Pícaro
 Subclase,Asesino,Pícaro
 Subclase,Cuchillo Alma,Pícaro
 Subclase,Ladrón,Pícaro
-Clase,Hechicero,
+Clase,Hechicero,Carisma-Constitución
 Subclase,Hechicería Aberrante,Hechicero
 Subclase,Hechicería de Relojería,Hechicero
 Subclase,Hechicería Dracónica,Hechicero
 Subclase,Magia Salvaje,Hechicero
-Clase,Brujo,
+Clase,Brujo,Carisma-Constitución
 Subclase,Patrón Archihada,Brujo
 Subclase,Patrón Celestial,Brujo
 Subclase,Patrón Fiend,Brujo
 Subclase,Patrón Gran Antiguo,Brujo
-Clase,Mago,
+Clase,Mago,Inteligencia-Destreza
 Subclase,Abjurador,Mago
 Subclase,Adivino,Mago
 Subclase,Escuela de Evocación,Mago
@@ -62,7 +62,7 @@ Subclase,Escuela de Ilusión,Mago
 Raza,Aasimar,
 Raza,Dragonborn,
 Raza,Enano,
-Taza,Elfo,
+Raza,Elfo,
 Subraza,Drow,Elfo
 Subraza,Alto Elfo,Elfo
 Subraza,Elfo de los Bosques,Elfo
@@ -70,29 +70,29 @@ Raza,Gnomo,
 Subraza,Gnomo de los Bosques,Gnomo
 Subraza,Gnomo de las Rocas,Gnomo
 Raza,Goliath,
-Subraza,Linaje del Gigante de las Nubes,Goliath
-Subraza,Linaje del Gigante de Fuego,Goliath
-Subraza,Linaje del Gigante de Escarcha,Goliath
-Subraza,Linaje del Gigante de las Colinas,Goliath
-Subraza,Linaje del Gigante de Piedra,Goliath
-Subraza,Linaje del Gigante de las Tormentas,Goliath
-Raza,Mediano,
+Subraza,Gigante de las Nubes,Goliath
+Subraza,Gigante de Fuego,Goliath
+Subraza,Gigante de Hielo,Goliath
+Subraza,Gigante de las Colinas,Goliath
+Subraza,Gigante de Piedra,Goliath
+Subraza,Gigante de la Tormenta,Goliath
+Raza,Halfling,
 Raza,Humano,
-Raza,Orco,
-Raza,Tifling,
+Raza,Orc,
+Raza,Tiefling,
 Trasfondo,Acólito,
 Trasfondo,Artesano,
 Trasfondo,Charlatán,
 Trasfondo,Criminal,
-Trasfondo,Artista,
+Trasfondo,Entretenedor,
 Trasfondo,Granjero,
 Trasfondo,Guardia,
 Trasfondo,Guía,
-Trasfondo,Ermitaño,
-Trasfondo,Comerciante,
+Trasfondo,Hermitaño,
+Trasfondo,Mercante,
 Trasfondo,Noble,
 Trasfondo,Sabio,
-Trasfondo,Marinero,
+Trasfondo,Marino,
 Trasfondo,Escriba,
 Trasfondo,Soldado,
-Trasfondo,Vagabundo,
+Trasfondo,Viajante,

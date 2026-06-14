@@ -1,0 +1,29 @@
+Tipo,Nombre,Dependencia
+Clase,Artificiero,Inteligencia-Constitución
+Subclase,Alquimista,Artificiero
+Subclase,Armero,Artificiero
+Subclase,Artillero,Artificiero
+Subclase,Cartografo,Artificiero
+Subclase,Herrero de Batalla,Artificiero
+Raza,Forjado,
+Raza,Changeling,
+Raza,Shifter,
+Raza,Kalashtar,
+Raza,Khoravar,
+Trasfondo,Heredero Aberrante,
+Trasfondo,Arqueologo,
+Trasfondo,Agente de Casa,
+Trasfondo,Heredero de la Casa Cannith,
+Trasfondo,Heredero de la Casa Deneith,
+Trasfondo,Heredero de la Casa Ghallanda,
+Trasfondo,Heredero de la Casa Jorasco,
+Trasfondo,Heredero de la Casa Kundarak,
+Trasfondo,Heredero de la Casa Lyrandar,
+Trasfondo,Heredero de la Casa Medani,
+Trasfondo,Heredero de la Casa Orien,
+Trasfondo,Heredero de la Casa Phiarlan,
+Trasfondo,Heredero de la Casa Sivis,
+Trasfondo,Heredero de la Casa Tharashk,
+Trasfondo,Heredero de la Casa Thuranni,
+Trasfondo,Heredero de la Casa Vadalis,
+Trasfondo,Inquisitivo,
