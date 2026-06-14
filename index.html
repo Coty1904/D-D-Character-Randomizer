@@ -10,8 +10,11 @@
 </head>
 <body>
 
+<div id="toast-container"></div>
+
 <div class="container">
     <h1>D&D Character Randomizer</h1>
+    
     <div class="form-group">
         <label for="level-select">Nivel del personaje:</label>
         <select id="level-select">
@@ -23,7 +26,7 @@
         </select>
     </div>
 
-    <button id="generate-btn">Generar Personaje</button>
+    <button id="generate-btn" disabled>Generar Personaje</button>
 
     <div class="result-box" id="result-box">
         <div class="result-item">
@@ -50,7 +53,8 @@
             <span class="label-result">Trasfondo</span>
             <span class="value-result" id="res-background">-</span>
         </div>
-        <div class="stats-container" id="container-stats" style="display: none; width: 100%; margin-top: 15px; border-top: 1px dashed #444; padding-top: 15px;">
+        
+        <div class="stats-container" id="container-stats" style="display: none;">
             <div class="stat-block"><span>FUE</span><strong id="stat-fue">10</strong></div>
             <div class="stat-block"><span>DES</span><strong id="stat-des">10</strong></div>
             <div class="stat-block"><span>CON</span><strong id="stat-con">10</strong></div>
@@ -59,6 +63,7 @@
             <div class="stat-block"><span>CAR</span><strong id="stat-car">10</strong></div>
         </div>
     </div>
+
     <div class="form-group">
         <label class="custom-file-upload">
             <input type="file" id="csv-file" accept=".csv" multiple>
@@ -68,10 +73,12 @@
 
     <div class="file-list-container">
         <label>Libros activos en el pool:</label>
-        <ul id="loaded-files-list">
-            <li class="empty-list-msg">Ningún libro cargado todavía.</li>
-        </ul>
+        <div id="loaded-files-list" class="chips-container">
+            <span class="empty-list-msg">Ningún libro cargado todavía.</span>
+        </div>
     </div>
+    
+    <button id="clear-btn" class="btn-secondary" style="margin-top: 10px; background-color: #333; font-size: 0.9rem; padding: 8px;">Limpiar Base de Datos</button>
 </div>
 
 </body>

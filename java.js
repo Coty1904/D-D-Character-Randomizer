@@ -1,5 +1,5 @@
 // =========================================================================
-// 1. BASE DE DATOS GLOBAL Y ACUMULATIVA
+// 1. BASE DE DATOS GLOBAL, ACUMULATIVA Y ETIQUETADA
 // =========================================================================
 let dataPool = { clases: {}, razas: {}, trasfondos: [] };
 let librosCargadosNombres = []; 
@@ -9,32 +9,61 @@ let librosCargadosNombres = [];
 // =========================================================================
 const fileInput = document.getElementById('csv-file');
 const generateBtn = document.getElementById('generate-btn');
-const statusText = document.getElementById('status-text');
 const loadedFilesList = document.getElementById('loaded-files-list');
+const toastContainer = document.getElementById('toast-container');
 
-// Elementos de visualización de resultados
+// Elementos de resultados
 const containerSubclass = document.getElementById('container-subclass');
 const containerSubrace = document.getElementById('container-subrace');
 const resultBox = document.getElementById('result-box');
-
-// Botón de limpieza (opcional)
 const clearBtn = document.getElementById('clear-btn'); 
 
 // =========================================================================
-// 3. EVENTOS DE CARGA DE ARCHIVOS
+// FUNCIÓN AUXILIAR: GENERADOR DE NOTIFICACIONES TOAST
+// =========================================================================
+function mostrarNotificacion(mensaje, tipo = "success") {
+    if (!toastContainer) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${tipo}`;
+    
+    const icono = tipo === "success" ? "✓" : "⚠️";
+    toast.innerHTML = `<span>${icono} ${mensaje}</span>`;
+    
+    toastContainer.appendChild(toast);
+    
+    // Lo removemos del DOM automáticamente cuando termina su animación de salida
+    setTimeout(() => {
+        toast.remove();
+    }, 4000);
+}
+
+// =========================================================================
+// 3. EVENTOS DE CARGA DE ARCHIVOS (CON TOAST INTEGRADO)
 // =========================================================================
 fileInput.addEventListener('change', function(e) {
     const files = e.target.files;
     if (files.length === 0) return;
 
+    let archivosFallidos = [];
+    let archivosExitososEnEstaTanda = [];
+
     let loaders = Array.from(files).map(file => {
         return new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = function(event) {
-                appendCSVToPool(event.target.result);
+                const contenido = event.target.result;
                 
-                if (!librosCargadosNombres.includes(file.name)) {
-                    librosCargadosNombres.push(file.name);
+                // Procesamos el archivo pasándole su propio nombre como etiqueta de origen
+                const esValido = appendCSVToPool(contenido, file.name);
+                
+                if (esValido === false) {
+                    archivosFallidos.push(file.name);
+                } else {
+                    archivosExitososEnEstaTanda.push(file.name);
+                    if (!librosCargadosNombres.includes(file.name)) {
+                        librosCargadosNombres.push(file.name);
+                    }
                 }
                 resolve();
             };
@@ -43,138 +72,238 @@ fileInput.addEventListener('change', function(e) {
     });
 
     Promise.all(loaders).then(() => {
-        actualizarEstado();
+        // Renderizar interfaz renovada con Chips
         actualizarListaVisual(); 
+        verificarBotones();
+
+        // Disparar las alertas flotantes (Toasts) individuales
+        if (archivosFallidos.length > 0) {
+            archivosFallidos.forEach(nombre => {
+                mostrarNotificacion(`Advertencia: ¡El libro "${nombre}" no tiene el formato adecuado para poder generar personajes!`, "error");
+            });
+        } else if (archivosExitososEnEstaTanda.length > 0) {
+            mostrarNotificacion("Base de datos actualizada con éxito.", "success");
+        }
+
         fileInput.value = ""; 
     });
 });
 
-// Parsear líneas del CSV e inyectar al Pool
-function appendCSVToPool(text) {
-    const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+// Parsear líneas e inyectar al Pool guardando el "origen" para poder borrarlo individualmente
+function appendCSVToPool(text, origenArchivo) {
+    if (!text || text.trim() === "") return false;
+
+    const lines = text.split(/\r?\n|\r/).filter(line => line.trim() !== "");
+    if (lines.length <= 1) return false;
+
+    if (!lines[1] || !lines[1].includes(',')) return false; 
+
+    let seProcesaronDatosValidos = false;
+    const tiposValidos = ["Clase", "Subclase", "Raza", "Subraza", "Trasfondo"];
+
     for (let i = 1; i < lines.length; i++) {
-        const [tipo, nombre, dependencia] = lines[i].split(',').map(item => item ? item.trim() : "");
-        if (!tipo || !nombre) continue;
+        if (!lines[i]) continue;
+
+        const columnas = lines[i].split(',');
+        const tipo = columnas[0] ? columnas[0].trim() : "";
+        const nombre = columnas[1] ? columnas[1].trim() : "";
+        const dependencia = columnas[2] ? columnas[2].trim() : "";
+
+        if (!tiposValidos.includes(tipo)) continue;
+        seProcesaronDatosValidos = true;
 
         switch (tipo) {
             case "Clase":
                 if (!dataPool.clases[nombre]) {
-                    // Si el CSV trae estadísticas (ej: "Fuerza-Constitución"), las mapeamos
                     const primarios = dependencia ? dependencia.split('-') : [];
-                    dataPool.clases[nombre] = { subclases: [], primarios: primarios };
+                    dataPool.clases[nombre] = { subclases: [], primarios: primarios, origen: origenArchivo };
                 }
                 break;
             case "Subclase":
                 if (!dataPool.clases[dependencia]) {
-                    dataPool.clases[dependencia] = { subclases: [], primarios: [] };
+                    dataPool.clases[dependencia] = { subclases: [], primarios: [], origen: origenArchivo };
                 }
-                if (!dataPool.clases[dependencia].subclases.includes(nombre)) {
-                    dataPool.clases[dependencia].subclases.push(nombre);
+                // Guardamos la subclase como objeto para retener su origen
+                if (!dataPool.clases[dependencia].subclases.some(s => s.nombre === nombre)) {
+                    dataPool.clases[dependencia].subclases.push({ nombre: nombre, origen: origenArchivo });
                 }
                 break;
             case "Raza":
-                if (!dataPool.razas[nombre]) dataPool.razas[nombre] = [];
+                if (!dataPool.razas[nombre]) {
+                    dataPool.razas[nombre] = { subrazas: [], origen: origenArchivo };
+                }
                 break;
             case "Subraza":
-                if (!dataPool.razas[dependencia]) dataPool.razas[dependencia] = [];
-                if (!dataPool.razas[dependencia].includes(nombre)) dataPool.razas[dependencia].push(nombre);
+                if (!dataPool.razas[dependencia]) {
+                    dataPool.razas[dependencia] = { subrazas: [], origen: origenArchivo };
+                }
+                if (!dataPool.razas[dependencia].subrazas.some(s => s.nombre === nombre)) {
+                    dataPool.razas[dependencia].subrazas.push({ nombre: nombre, origen: origenArchivo });
+                }
                 break;
             case "Trasfondo":
-                if (!dataPool.trasfondos.includes(nombre)) dataPool.trasfondos.push(nombre);
+                if (!dataPool.trasfondos.some(t => t.nombre === nombre)) {
+                    dataPool.trasfondos.push({ nombre: nombre, origen: origenArchivo });
+                }
                 break;
         }
     }
+    return seProcesaronDatosValidos;
 }
 
 // =========================================================================
-// 4. ACTUALIZACIÓN DE INTERFAZ (ESTADOS Y LISTAS)
+// 4. NUEVA LÓGICA DE INTERFAZ: RENDERIZADO DE CHIPS Y BORRADO SELECCIONAL
 // =========================================================================
 function actualizarListaVisual() {
     if (!loadedFilesList) return;
     
     if (librosCargadosNombres.length === 0) {
-        loadedFilesList.innerHTML = `<li class="empty-list-msg">Ningún libro cargado todavía.</li>`;
+        loadedFilesList.innerHTML = `<span class="empty-list-msg">Ningún libro cargado todavía.</span>`;
         return;
     }
 
     loadedFilesList.innerHTML = librosCargadosNombres
-        .map(nombre => `<li>${nombre}</li>`)
-        .join('');
+        .map(nombre => `
+            <div class="libro-chip">
+                <span>📖 ${nombre}</span>
+                <button type="button" class="btn-remove-chip" onclick="eliminarLibroIndividual('${nombre}')">×</button>
+            </div>
+        `).join('');
 }
 
-function actualizarEstado() {
-    const totalClases = Object.keys(dataPool.clases).length;
-    const totalTrasfondos = dataPool.trasfondos.length;
-
-    if (totalClases > 0 || totalTrasfondos > 0) {
-        if (statusText) statusText.innerHTML = `<span style="color: #2ecc71; font-weight: bold;">✓ Base de datos actualizada con éxito.</span>`;
-        generateBtn.disabled = false;
-    } else {
-        if (statusText) statusText.innerText = "Error: Datos no válidos.";
-        generateBtn.disabled = true;
+// FUNCIÓN CLAVE: Filtrar y extirpar los datos pertenecientes al libro eliminado
+window.eliminarLibroIndividual = function(nombreLibro) {
+    // 1. Remover de las clases
+    for (const clase in dataPool.clases) {
+        if (dataPool.clases[clase].origen === nombreLibro) {
+            delete dataPool.clases[clase];
+        } else {
+            // Si la clase se queda, limpiamos solo sus subclases que vengan de ese archivo roto
+            dataPool.clases[clase].subclases = dataPool.clases[clase].subclases.filter(s => s.origen !== nombreLibro);
+        }
     }
+
+    // 2. Remover de las razas
+    for (const raza in dataPool.razas) {
+        if (dataPool.razas[raza].origen === nombreLibro) {
+            delete dataPool.razas[raza];
+        } else {
+            dataPool.razas[raza].subrazas = dataPool.razas[raza].subrazas.filter(s => s.origen !== nombreLibro);
+        }
+    }
+
+    // 3. Remover de los trasfondos
+    dataPool.trasfondos = dataPool.trasfondos.filter(t => t.origen !== nombreLibro);
+
+    // 4. Remover del índice global de nombres
+    librosCargadosNombres = librosCargadosNombres.filter(n => n !== nombreLibro);
+
+    // Actualizar pantalla y lanzar aviso
+    actualizarListaVisual();
+    verificarBotones();
+    mostrarNotificacion(`Se eliminó "${nombreLibro}" de la base de datos.`, "success");
+};
+
+function verificarBotones() {
+    const totalClasesActivas = Object.keys(dataPool.clases).length;
+    const totalTrasfondosActivos = dataPool.trasfondos.length;
+    generateBtn.disabled = !(totalClasesActivas > 0 || totalTrasfondosActivos > 0);
 }
 
-// Lógica segura para el botón de limpiar
+// Lógica para el botón de limpiar todo
 if (clearBtn) {
     clearBtn.addEventListener('click', () => {
         dataPool = { clases: {}, razas: {}, trasfondos: [] };
         librosCargadosNombres = [];
-        generateBtn.disabled = true;
         actualizarListaVisual();
-        if (statusText) statusText.innerText = "Base de datos vaciada. Por favor, carga archivos .csv";
+        verificarBotones();
+        mostrarNotificacion("Base de datos completamente vaciada.", "error");
         if (resultBox) resultBox.style.display = "none";
-        
         const containerStats = document.getElementById('container-stats');
         if (containerStats) containerStats.style.display = "none";
     });
 }
 
 // =========================================================================
-// 5. FUNCIÓN DE ASIGNACIÓN DE ESTADÍSTICAS OPTIMIZADAS
+// 5. FUNCIÓN DE APOYO: GENERACIÓN Y ASIGNACIÓN CON EFECTO "SLOT MACHINE"
 // =========================================================================
 function generarStatsOptimizadas(claseNombre) {
-    const atributos = ["Fuerza", "Destreza", "Constitución", "Inteligencia", "Sabiduría", "Carisma"];
-    const standardArray = [15, 14, 13, 12, 10, 8];
-    
-    let resultadoStats = { "Fuerza": 0, "Destreza": 0, "Constitución": 0, "Inteligencia": 0, "Sabiduría": 0, "Carisma": 0 };
-    
-    const claseInfo = dataPool.clases[claseNombre];
-    // Failsafe por si una clase vino vacía o sin dependencias en el CSV
-    const primarios = (claseInfo && claseInfo.primarios.length > 0) ? claseInfo.primarios : ["Fuerza", "Constitución"];
-    
-    // 1. Asignamos los puntajes máximos (15 y 14) a las dos estadísticas core de la clase
-    if (resultadoStats.hasOwnProperty(primarios[0])) {
-        resultadoStats[primarios[0]] = standardArray.shift(); // Saca el 15
-    }
-    if (primarios[1] && resultadoStats.hasOwnProperty(primarios[1])) {
-        resultadoStats[primarios[1]] = standardArray.shift(); // Saca el 14
-    }
-    
-    // 2. Mezclamos el resto del Standard Array (13, 12, 10, 8) para que varíe el resto del build
-    const restantesMezclados = standardArray.sort(() => Math.random() - 0.5);
-    
-    // 3. Repartimos los números mezclados en los atributos que quedaron en cero
-    atributos.forEach(attr => {
-        if (resultadoStats[attr] === 0) {
-            resultadoStats[attr] = restantesMezclados.shift();
+    const statsNombres = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    let statsFinales = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+
+    const traductorIds = {
+        str: 'stat-fue', dex: 'stat-des', con: 'stat-con',
+        int: 'stat-int', wis: 'stat-sab', cha: 'stat-car'
+    };
+
+    const traductorCsv = {
+        str: 'Fuerza', dex: 'Destreza', con: 'Constitución',
+        int: 'Inteligencia', wis: 'Sabiduría', cha: 'Carisma'
+    };
+
+    const dadosDados = [15, 14, 13, 12, 10, 8];
+    const primarios = dataPool.clases[claseNombre]?.primarios || [];
+
+    let prioridadAlta = [];
+    let prioridadBaja = [];
+
+    statsNombres.forEach(stat => {
+        const nombreEnEspañol = traductorCsv[stat];
+        if (primarios.includes(nombreEnEspañol)) {
+            prioridadAlta.push(stat);
+        } else {
+            prioridadBaja.push(stat);
         }
     });
-    
-    // 4. Inyección controlada en los bloques de estadísticas del DOM
-    if(document.getElementById('stat-fue')) document.getElementById('stat-fue').innerText = resultadoStats["Fuerza"];
-    if(document.getElementById('stat-des')) document.getElementById('stat-des').innerText = resultadoStats["Destreza"];
-    if(document.getElementById('stat-con')) document.getElementById('stat-con').innerText = resultadoStats["Constitución"];
-    if(document.getElementById('stat-int')) document.getElementById('stat-int').innerText = resultadoStats["Inteligencia"];
-    if(document.getElementById('stat-sab')) document.getElementById('stat-sab').innerText = resultadoStats["Sabiduría"];
-    if(document.getElementById('stat-car')) document.getElementById('stat-car').innerText = resultadoStats["Carisma"];
-    
+
+    prioridadBaja.sort(() => Math.random() - 0.5);
+    const ordenAsignacion = [...prioridadAlta, ...prioridadBaja];
+
+    ordenAsignacion.forEach((stat, index) => {
+        statsFinales[stat] = dadosDados[index];
+    });
+
+    // --- MAGIA DEL EFECTO SLOT MACHINE ---
     const containerStats = document.getElementById('container-stats');
-    if (containerStats) containerStats.style.display = "flex";
+    if (containerStats) {
+        containerStats.style.display = "flex"; // Forzamos visibilidad horizontal inmediata
+    }
+
+    // 1. Inyectamos la clase animada a las etiquetas strong de tu HTML
+    statsNombres.forEach(stat => {
+        const elementoHtml = document.getElementById(traductorIds[stat]);
+        if (elementoHtml) {
+            elementoHtml.classList.add('stat-rolling');
+        }
+    });
+
+    // 2. Intervalo a toda velocidad (cambia números cada 50ms)
+    const intervaloRoll = setInterval(() => {
+        statsNombres.forEach(stat => {
+            const elementoHtml = document.getElementById(traductorIds[stat]);
+            if (elementoHtml) {
+                // Genera números intermedios simulando dados locos de rol
+                elementoHtml.innerText = Math.floor(Math.random() * 16) + 3;
+            }
+        });
+    }, 50);
+
+    // 3. Clavado milimétrico a los 500ms
+    setTimeout(() => {
+        clearInterval(intervaloRoll); // Detenemos los dados locos
+
+        statsNombres.forEach(stat => {
+            const elementoHtml = document.getElementById(traductorIds[stat]);
+            if (elementoHtml) {
+                elementoHtml.classList.remove('stat-rolling'); // Frenamos animación
+                elementoHtml.innerText = statsFinales[stat]; // Devolvemos el número real del CSV
+            }
+        });
+    }, 500);
 }
 
 // =========================================================================
-// 6. LÓGICA DEL RANDOMIZADOR
+// 6. LÓGICA DEL RANDOMIZADOR CON SLOT MACHINE HOMOGÉNEO EN LAS 6 COLUMNAS
 // =========================================================================
 const getRandomElement = (array) => array[Math.floor(Math.random() * array.length)];
 
@@ -183,49 +312,99 @@ generateBtn.addEventListener('click', () => {
     if (!levelSelect) return;
     
     const level = parseInt(levelSelect.value);
-    
-    // --- CLASE Y SUBCLASE ---
     const clasesDisponibles = Object.keys(dataPool.clases);
-    if (clasesDisponibles.length === 0) return; 
     
+    if (clasesDisponibles.length === 0) {
+        mostrarNotificacion("Error: Primero tenés que cargar un libro válido.", "error");
+        return; 
+    }
+    
+    // --- 1. REALIZAR LOS SORTEOS REALES TRAS BAMBALINAS ---
     const claseRandom = getRandomElement(clasesDisponibles);
     let subclaseRandom = "No aplica (Nivel menor a 3)";
+    const listaSubclases = dataPool.clases[claseRandom].subclases || [];
     
-    const listaSubclases = dataPool.clases[claseRandom].subclases;
-    
-    if (level >= 3 && listaSubclases && listaSubclases.length > 0) {
-        subclaseRandom = getRandomElement(listaSubclases);
-        if (containerSubclass) containerSubclass.style.display = "block";
-    } else {
-        if (containerSubclass) containerSubclass.style.display = "none";
+    if (level >= 3 && listaSubclases.length > 0) {
+        subclaseRandom = getRandomElement(listaSubclases).nombre;
     }
 
-    // --- RAZA Y SUBRAZA ---
     const razasDisponibles = Object.keys(dataPool.razas);
     const razaRandom = razasDisponibles.length > 0 ? getRandomElement(razasDisponibles) : "Desconocida";
-    const subrazasDeRaza = dataPool.razas[razaRandom] || [];
-    let subrazaRandom = "";
-
+    
+    const subrazasDeRaza = dataPool.razas[razaRandom]?.subrazas || [];
+    let subrazaRandom = "No aplica / Ninguna";
     if (subrazasDeRaza.length > 0) {
-        subrazaRandom = getRandomElement(subrazasDeRaza);
-        if (containerSubrace) containerSubrace.style.display = "block";
-    } else {
-        if (containerSubrace) containerSubrace.style.display = "none";
+        subrazaRandom = getRandomElement(subrazasDeRaza).nombre;
     }
 
-    // --- TRASFONDO ---
-    const trasfondoRandom = dataPool.trasfondos.length > 0 ? getRandomElement(dataPool.trasfondos) : "Ninguno";
+    const trasfondoRandom = dataPool.trasfondos.length > 0 ? getRandomElement(dataPool.trasfondos).nombre : "Ninguno";
 
-    // --- INYECCIÓN EN EL DOM ---
-    document.getElementById('res-level').innerText = level;
-    document.getElementById('res-class').innerText = claseRandom;
-    document.getElementById('res-subclass').innerText = subclaseRandom;
-    document.getElementById('res-race').innerText = razaRandom;
-    document.getElementById('res-subrace').innerText = subrazaRandom;
-    document.getElementById('res-background').innerText = trasfondoRandom;
+    // --- 2. PREPARAR POOLS DE PALABRAS PARA EL EFECTO CASINO ---
+    const palabrasFalsasClases = clasesDisponibles;
+    const palabrasFalsasRazas = razasDisponibles.length > 0 ? razasDisponibles : ["Humano", "Elfo", "Enano", "Orco"];
+    const palabrasFalsasTrasfondos = dataPool.trasfondos.length > 0 ? dataPool.trasfondos.map(t => t.nombre) : ["Acólito", "Criminal", "Héroe"];
 
-    // --- GENERAR CARACTERÍSTICAS SEMI-OPTIMIZADAS ---
+    // NUEVO: Recolectamos TODAS las subclases y subrazas de la memoria para que el giro tenga palabras reales
+    let todasLasSubclasesFalsas = [];
+    for (const c in dataPool.clases) {
+        dataPool.clases[c].subclases.forEach(s => todasLasSubclasesFalsas.push(s.nombre));
+    }
+    if (todasLasSubclasesFalsas.length === 0) todasLasSubclasesFalsas = ["Campeón", "Evocador", "Asesino"];
+
+    let todasLasSubrazasFalsas = [];
+    for (const r in dataPool.razas) {
+        dataPool.razas[r].subrazas.forEach(s => todasLasSubrazasFalsas.push(s.nombre));
+    }
+    if (todasLasSubrazasFalsas.length === 0) todasLasSubrazasFalsas = ["Alto Elfo", "Enano Colina"];
+
+    // --- 3. CONFIGURAR LA INTERFAZ PARA EL GIRO ---
+    if (containerSubclass) containerSubclass.style.display = (level >= 3 && listaSubclases.length > 0) ? "block" : "none";
+    if (containerSubrace) containerSubrace.style.display = (subrazasDeRaza.length > 0) ? "block" : "none";
+    if (resultBox) resultBox.style.display = "grid";
+
+    const txtLevel = document.getElementById('res-level');
+    const txtRace = document.getElementById('res-race');
+    const txtSubrace = document.getElementById('res-subrace');
+    const txtClass = document.getElementById('res-class');
+    const txtSubclass = document.getElementById('res-subclass');
+    const txtBackground = document.getElementById('res-background');
+
+    const textosHtml = [txtLevel, txtRace, txtSubrace, txtClass, txtSubclass, txtBackground];
+    textosHtml.forEach(el => { if (el) el.classList.add('stat-rolling'); });
+
+    // --- 4. DISPARAR INTERVALO DE TEXTO DE CASINO (Cada 50ms) ---
+    const intervaloTextoRoll = setInterval(() => {
+        if (txtLevel) txtLevel.innerText = Math.floor(Math.random() * 20) + 1;
+        if (txtRace) txtRace.innerText = getRandomElement(palabrasFalsasRazas);
+        
+        // CORRECCIÓN: Ahora en vez de "Sorteando..." y "Buscando..." eligen palabras cambiantes reales
+        if (txtSubrace) txtSubrace.innerText = getRandomElement(todasLasSubrazasFalsas);
+        if (txtClass) txtClass.innerText = getRandomElement(palabrasFalsasClases);
+        if (txtSubclass) txtSubclass.innerText = getRandomElement(todasLasSubclasesFalsas);
+        
+        if (txtBackground) txtBackground.innerText = getRandomElement(palabrasFalsasTrasfondos);
+    }, 50);
+
+    // Giro de las estadísticas en paralelo
     generarStatsOptimizadas(claseRandom);
 
-    if (resultBox) resultBox.style.display = "grid";
+    // --- 5. FRENADO GENERAL A LOS 500MS ---
+    setTimeout(() => {
+        clearInterval(intervaloTextoRoll); // Frenamos la ruleta
+
+        textosHtml.forEach(el => { if (el) el.classList.remove('stat-rolling'); });
+
+        // Clavamos los valores verdaderos y estrictos del sorteo
+        if (txtLevel) txtLevel.innerText = level;
+        if (txtRace) txtRace.innerText = razaRandom;
+        if (txtSubrace) txtSubrace.innerText = subrazaRandom;
+        if (txtClass) txtClass.innerText = claseRandom;
+        if (txtSubclass) txtSubclass.innerText = subclaseRandom;
+        if (txtBackground) txtBackground.innerText = trasfondoRandom;
+
+        // Ajuste final de visibilidad por si el resultado definitivo no lleva subraza o subclase
+        if (containerSubclass) containerSubclass.style.display = (level >= 3 && listaSubclases.length > 0) ? "block" : "none";
+        if (containerSubrace) containerSubrace.style.display = (subrazasDeRaza.length > 0) ? "block" : "none";
+
+    }, 500);
 });
