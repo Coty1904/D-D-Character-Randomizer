@@ -372,3 +372,90 @@ button:disabled {
     box-shadow: 0 0 15px rgba(255, 62, 62, 0.25); /* Efecto de brillo (glow) que la hace resaltar */
     transform: translateY(-2px); /* La dejamos un pelito levantada para dar tridimensionalidad */
 }
+
+/* =========================================================================
+   PANEL DE CONTROL DE MANUALES NATIVOS DE LA DB
+   ========================================================================= */
+.native-books-container {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.native-books-container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.native-books-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Tarjeta interactiva del Switch */
+.libro-switch-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background-color: #222;
+    border: 1px solid #444;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.libro-switch-card:hover {
+    border-color: var(--accent-color);
+    background-color: #282828;
+}
+
+/* Ocultar el checkbox nativo tosco */
+.libro-switch-card input[type="checkbox"] {
+    display: none;
+}
+
+/* La cajita del indicador visual custom */
+.switch-box {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #666;
+    border-radius: 4px;
+    position: relative;
+    display: inline-block;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+/* Cuando el switch está encendido */
+.libro-switch-card input[type="checkbox"]:checked + .switch-box {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 8px rgba(255, 62, 62, 0.4);
+}
+
+/* La tilde interna blanca del check */
+.libro-switch-card input[type="checkbox"]:checked + .switch-box::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    top: -3px;
+    left: 1px;
+}
+
+.libro-titulo {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+}

@@ -64,6 +64,21 @@
         </div>
     </div>
 
+    <!-- Contenedor dinámico para los manuales precargados de la DB -->
+    <div class="native-books-container">
+        <h3>📖 Manuales Disponibles</h3>
+        <div id="native-books-grid" class="native-books-grid">
+            <!-- El JS va a generar las tarjetas y los switches acá adentro de forma automática -->
+        </div>
+    </div>
+
+    <!-- Tus libros subidos por input (Mantené tu estructura) -->
+    <div class="user-books-container" style="margin-top: 20px;">
+        <div id="loaded-files-list">
+            <span class="empty-list-msg">Ningún libro cargado todavía.</span>
+        </div>
+    </div>
+
     <div class="form-group">
         <label class="custom-file-upload">
             <input type="file" id="csv-file" accept=".csv" multiple>
