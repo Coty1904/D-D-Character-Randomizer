@@ -364,3 +364,11 @@ button:disabled {
         opacity: 1;
     }
 }
+
+/* Estado especial para las tarjetas que recibieron el +2 o +1 del Trasfondo */
+.stat-block.stat-boosted {
+    background: linear-gradient(145deg, #2a1818, #1c1212); /* Un fondo rojizo oscuro muy sutil */
+    border-color: var(--accent-color) !important; /* Forzamos el borde rojo característico */
+    box-shadow: 0 0 15px rgba(255, 62, 62, 0.25); /* Efecto de brillo (glow) que la hace resaltar */
+    transform: translateY(-2px); /* La dejamos un pelito levantada para dar tridimensionalidad */
+}

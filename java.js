@@ -143,7 +143,13 @@ function appendCSVToPool(text, origenArchivo) {
                 break;
             case "Trasfondo":
                 if (!dataPool.trasfondos.some(t => t.nombre === nombre)) {
-                    dataPool.trasfondos.push({ nombre: nombre, origen: origenArchivo });
+                    // SEPARACIÓN CLAVE: Mapeamos los atributos del CSV (ej: Fuerza-Constitución)
+                    const opcionesBonus = dependencia ? dependencia.split('-') : [];
+                    dataPool.trasfondos.push({ 
+                        nombre: nombre, 
+                        origen: origenArchivo, 
+                        opciones: opcionesBonus 
+                    });
                 }
                 break;
         }
@@ -225,9 +231,9 @@ if (clearBtn) {
 }
 
 // =========================================================================
-// 5. FUNCIÓN DE APOYO: GENERACIÓN Y ASIGNACIÓN CON EFECTO "SLOT MACHINE"
+// 5. FUNCIÓN DE APOYO: GENERACIÓN, ASIGNACIÓN Y BONOS DE TRASFONDO (CORREGIDO)
 // =========================================================================
-function generarStatsOptimizadas(claseNombre) {
+function generarStatsOptimizadas(claseNombre, trasfondoNombre) {
     const statsNombres = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     let statsFinales = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
 
@@ -247,6 +253,7 @@ function generarStatsOptimizadas(claseNombre) {
     let prioridadAlta = [];
     let prioridadBaja = [];
 
+    // --- FASE 1: REPARTO BASE (STANDARD ARRAY) ---
     statsNombres.forEach(stat => {
         const nombreEnEspañol = traductorCsv[stat];
         if (primarios.includes(nombreEnEspañol)) {
@@ -263,40 +270,83 @@ function generarStatsOptimizadas(claseNombre) {
         statsFinales[stat] = dadosDados[index];
     });
 
-    // --- MAGIA DEL EFECTO SLOT MACHINE ---
+    // --- FASE 2: PREPARAR EL GIRO VISUAL ---
     const containerStats = document.getElementById('container-stats');
-    if (containerStats) {
-        containerStats.style.display = "flex"; // Forzamos visibilidad horizontal inmediata
-    }
+    if (containerStats) containerStats.style.display = "flex";
 
-    // 1. Inyectamos la clase animada a las etiquetas strong de tu HTML
     statsNombres.forEach(stat => {
         const elementoHtml = document.getElementById(traductorIds[stat]);
         if (elementoHtml) {
             elementoHtml.classList.add('stat-rolling');
+            const contenedorPadre = elementoHtml.parentElement;
+            if (contenedorPadre) contenedorPadre.classList.remove('stat-boosted');
         }
     });
 
-    // 2. Intervalo a toda velocidad (cambia números cada 50ms)
+    // Arranca la animación del casino
     const intervaloRoll = setInterval(() => {
         statsNombres.forEach(stat => {
             const elementoHtml = document.getElementById(traductorIds[stat]);
             if (elementoHtml) {
-                // Genera números intermedios simulando dados locos de rol
                 elementoHtml.innerText = Math.floor(Math.random() * 16) + 3;
             }
         });
     }, 50);
 
-    // 3. Clavado milimétrico a los 500ms
+    // --- FASE 3: DETENER GIRO Y CALCULAR SUMAS EN SIMULTÁNEO ---
     setTimeout(() => {
-        clearInterval(intervaloRoll); // Detenemos los dados locos
+        clearInterval(intervaloRoll); // Matamos el bucle loco
 
+        // Buscamos el trasfondo adentro del timeout para evitar desajustes
+        const trasfondoObj = dataPool.trasfondos.find(t => t.nombre === trasfondoNombre);
+        const opcionesBonus = trasfondoObj?.opciones || [];
+
+        let atributosAptosConValor = [];
+        statsNombres.forEach(stat => {
+            const nombreEnEspañol = traductorCsv[stat];
+            if (opcionesBonus.includes(nombreEnEspañol)) {
+                atributosAptosConValor.push({
+                    clave: stat,
+                    valorBase: statsFinales[stat]
+                });
+            }
+        });
+
+        // Ordenamos las opciones de mayor a menor para meter los bonus de forma inteligente
+        atributosAptosConValor.sort((a, b) => b.valorBase - a.valorBase);
+
+        let statConMasDos = null;
+        let statConMasUno = null;
+
+        if (atributosAptosConValor.length >= 1) {
+            statConMasDos = atributosAptosConValor[0].clave;
+            statsFinales[statConMasDos] += 2; 
+        }
+        if (atributosAptosConValor.length >= 2) {
+            statConMasUno = atributosAptosConValor[1].clave;
+            statsFinales[statConMasUno] += 1; 
+        }
+
+        // --- FASE 4: IMPRIMIR RESULTADOS FINALES ACTUALIZADOS ---
         statsNombres.forEach(stat => {
             const elementoHtml = document.getElementById(traductorIds[stat]);
             if (elementoHtml) {
-                elementoHtml.classList.remove('stat-rolling'); // Frenamos animación
-                elementoHtml.innerText = statsFinales[stat]; // Devolvemos el número real del CSV
+                elementoHtml.classList.remove('stat-rolling');
+                
+                const valorFinal = statsFinales[stat];
+                const mod = Math.floor((valorFinal - 10) / 2);
+                const signoMod = mod >= 0 ? `+${mod}` : `${mod}`;
+
+                // Inyectamos el número final sumado y su modificador
+                elementoHtml.innerHTML = `${valorFinal} <span style="font-size: 0.85rem; color: var(--text-secondary); margin-left: 4px; display: inline;">(${signoMod})</span>`;
+
+                // CORRECCIÓN: Quitamos la variable fantasma "statenConMasUno" para que no explote
+                if (stat === statConMasDos || stat === statConMasUno) {
+                    const contenedorPadre = elementoHtml.parentElement;
+                    if (contenedorPadre) {
+                        contenedorPadre.classList.add('stat-boosted');
+                    }
+                }
             }
         });
     }, 500);
@@ -344,7 +394,6 @@ generateBtn.addEventListener('click', () => {
     const palabrasFalsasRazas = razasDisponibles.length > 0 ? razasDisponibles : ["Humano", "Elfo", "Enano", "Orco"];
     const palabrasFalsasTrasfondos = dataPool.trasfondos.length > 0 ? dataPool.trasfondos.map(t => t.nombre) : ["Acólito", "Criminal", "Héroe"];
 
-    // NUEVO: Recolectamos TODAS las subclases y subrazas de la memoria para que el giro tenga palabras reales
     let todasLasSubclasesFalsas = [];
     for (const c in dataPool.clases) {
         dataPool.clases[c].subclases.forEach(s => todasLasSubclasesFalsas.push(s.nombre));
@@ -376,25 +425,21 @@ generateBtn.addEventListener('click', () => {
     const intervaloTextoRoll = setInterval(() => {
         if (txtLevel) txtLevel.innerText = Math.floor(Math.random() * 20) + 1;
         if (txtRace) txtRace.innerText = getRandomElement(palabrasFalsasRazas);
-        
-        // CORRECCIÓN: Ahora en vez de "Sorteando..." y "Buscando..." eligen palabras cambiantes reales
         if (txtSubrace) txtSubrace.innerText = getRandomElement(todasLasSubrazasFalsas);
         if (txtClass) txtClass.innerText = getRandomElement(palabrasFalsasClases);
         if (txtSubclass) txtSubclass.innerText = getRandomElement(todasLasSubclasesFalsas);
-        
         if (txtBackground) txtBackground.innerText = getRandomElement(palabrasFalsasTrasfondos);
     }, 50);
 
-    // Giro de las estadísticas en paralelo
-    generarStatsOptimizadas(claseRandom);
+    // CORRECCIÓN CLAVE: Pasamos la clase sorteada Y el trasfondo sorteado para que calcule los bonus reales
+    generarStatsOptimizadas(claseRandom, trasfondoRandom);
 
     // --- 5. FRENADO GENERAL A LOS 500MS ---
     setTimeout(() => {
-        clearInterval(intervaloTextoRoll); // Frenamos la ruleta
+        clearInterval(intervaloTextoRoll); 
 
         textosHtml.forEach(el => { if (el) el.classList.remove('stat-rolling'); });
 
-        // Clavamos los valores verdaderos y estrictos del sorteo
         if (txtLevel) txtLevel.innerText = level;
         if (txtRace) txtRace.innerText = razaRandom;
         if (txtSubrace) txtSubrace.innerText = subrazaRandom;
@@ -402,7 +447,6 @@ generateBtn.addEventListener('click', () => {
         if (txtSubclass) txtSubclass.innerText = subclaseRandom;
         if (txtBackground) txtBackground.innerText = trasfondoRandom;
 
-        // Ajuste final de visibilidad por si el resultado definitivo no lleva subraza o subclase
         if (containerSubclass) containerSubclass.style.display = (level >= 3 && listaSubclases.length > 0) ? "block" : "none";
         if (containerSubrace) containerSubrace.style.display = (subrazasDeRaza.length > 0) ? "block" : "none";
 
