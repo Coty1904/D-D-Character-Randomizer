@@ -459,3 +459,108 @@ button:disabled {
     font-weight: 600;
     color: var(--text-color);
 }
+
+/* =========================================================================
+   MEDIA QUERIES: OPTIMIZACIÓN COMPLETA PARA DISPOSITIVOS MÓVILES (< 768px)
+   ========================================================================= */
+@media (max-width: 768px) {
+    body {
+        padding: 10px; /* Menos margen en los bordes de la pantalla del celular */
+    }
+
+    .container {
+        padding: 20px 15px; /* Compactamos el contenedor principal */
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 1.5rem; /* Un título un toque más sutil para que no ocupe media pantalla */
+    }
+
+    /* --- REFACTOR DE LA TABLA DE RESULTADOS A FILAS VERTICALES --- */
+    .result-box {
+        grid-template-columns: 1fr; /* Rompemos las 6 columnas horizontales y dejamos 1 sola vertical */
+        row-gap: 14px;
+        padding: 15px;
+    }
+
+    .result-item {
+        flex-direction: row; /* Ponemos el título y el valor uno al lado del otro */
+        justify-content: space-between; /* Título a la izquierda, valor a la derecha */
+        align-items: center;
+        text-align: left;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #252525; /* Una línea sutil divisoria por categoría */
+    }
+
+    .result-item:last-of-type {
+        border-bottom: none; /* Quitamos la línea al último elemento */
+    }
+
+    .label-result {
+        width: auto;
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+        font-size: 0.8rem;
+    }
+
+    .value-result {
+        width: auto;
+        text-align: right;
+        min-height: auto; /* Ya no necesitamos el candado de alto fijo porque están en filas individuales */
+        font-size: 1.05rem;
+    }
+
+    /* --- REFACTOR DE LAS ESTADÍSTICAS (GRID DE 3 COLUMNAS x 2 FILAS) --- */
+    .stats-container {
+        grid-column: 1; /* Se acopla al flujo vertical de la result-box */
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 bloques por dote por fila */
+        gap: 8px;
+        padding-top: 15px;
+    }
+
+    .stat-block {
+        min-width: auto;
+        padding: 8px 4px;
+    }
+
+    .stat-block strong {
+        font-size: 1.15rem; /* Achicamos un pelito el número grande para que entre con el modificador */
+    }
+    
+    .stat-block span {
+        font-size: 0.7rem;
+    }
+
+    /* --- BOTONES Y COMPONENTES DE INTERFAZ MÓVIL --- */
+    button {
+        padding: 14px; /* Más alto el botón para que sea más fácil de clickear con el pulgar */
+        font-size: 1rem;
+    }
+
+    .custom-file-upload {
+        margin-top: 20px;
+        padding: 14px;
+    }
+
+    /* Ajuste para que las pastillas de libros nativos y chips no queden gigantes */
+    .native-books-grid, .chips-container {
+        gap: 8px;
+    }
+
+    .libro-switch-card, .libro-chip {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        flex: 1 1 calc(50% - 8px); /* Hace que se acomoden de a dos por fila si el espacio da */
+        justify-content: space-between;
+    }
+}
+
+/* Ajuste extra para celulares ultra chicos (iPhone SE, etc.) */
+@media (max-width: 380px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr); /* Pasamos a 2 columnas x 3 filas si la pantalla es un llavero */
+    }
+}
