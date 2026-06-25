@@ -404,6 +404,10 @@ if (generateBtn) {
             return; 
         }
         
+        generateBtn.disabled = true;
+        const textoOriginalBoton = generateBtn.innerText;
+        generateBtn.innerText = "SORTEANDO...";
+
         const claseRandom = getRandomElement(clasesDisponibles);
         let subclaseRandom = "No aplica (Nivel menor a 3)";
         const listaSubclases = dataPool.clases[claseRandom].subclases || [];
@@ -465,19 +469,26 @@ if (generateBtn) {
         generarStatsOptimizadas(claseRandom, trasfondoRandom);
 
         setTimeout(() => {
-            clearInterval(intervaloTextoRoll); 
-            textosHtml.forEach(el => { if (el) el.classList.remove('stat-rolling'); });
+                clearInterval(intervaloTextoRoll); 
+                textosHtml.forEach(el => { if (el) el.classList.remove('stat-rolling'); });
 
-            if (txtLevel) txtLevel.innerText = level;
-            if (txtRace) txtRace.innerText = razaRandom;
-            if (txtSubrace) txtSubrace.innerText = subrazaRandom;
-            if (txtClass) txtClass.innerText = claseRandom;
-            if (txtSubclass) txtSubclass.innerText = subclaseRandom;
-            if (txtBackground) txtBackground.innerText = trasfondoRandom;
+                if (txtLevel) txtLevel.innerText = level;
+                if (txtRace) txtRace.innerText = razaRandom;
+                if (txtSubrace) txtSubrace.innerText = subrazaRandom;
+                if (txtClass) txtClass.innerText = claseRandom;
+                if (txtSubclass) txtSubclass.innerText = subclaseRandom;
+                if (txtBackground) txtBackground.innerText = trasfondoRandom;
 
-            if (containerSubclass) containerSubclass.style.display = (level >= 3 && listaSubclases.length > 0) ? "block" : "none";
-            if (containerSubrace) containerSubrace.style.display = (subrazasDeRaza.length > 0) ? "block" : "none";
-        }, 500);
+                if (containerSubclass) containerSubclass.style.display = (level >= 3 && listaSubclases.length > 0) ? "block" : "none";
+                if (containerSubrace) containerSubrace.style.display = (subrazasDeRaza.length > 0) ? "block" : "none";
+
+                // =========================================================================
+                // RE-ACTIVACIÓN: El casino terminó de forma segura, liberamos el botón
+                // =========================================================================
+                generateBtn.disabled = false;
+                generateBtn.innerText = textoOriginalBoton;
+
+            }, 500);
     });
 }
 
