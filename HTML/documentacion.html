@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación - D&D 2024 Character Randomizer</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/doc-style.css">
+    <link rel="icon" href="../IMG/icon.png">
+    <style>
+        .doc-section { margin-bottom: 40px; }
+        .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+        .doc-section ul { padding-left: 20px; }
+        .doc-section li { margin-bottom: 8px; }
+        .code-block { background: #111; padding: 15px; border-radius: 6px; border: 1px solid #333; font-family: monospace; color: #00ff66; overflow-x: auto; margin: 15px 0; }
+        .btn-back { display: inline-block; margin-bottom: 30px; color: var(--accent-color); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="btn-back">← Volver al Generador</a>
+        <h1>Manual Técnico y Documentación</h1>
+        <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 40px;">Guía de arquitectura y funcionamiento del sistema desacoplado de datos.</p>
+
+        <div class="doc-section">
+            <h2>🚀 Funcionalidades Clave</h2>
+            <ul>
+                <li><strong>Carga Asíncrona Múltiple:</strong> Procesa archivos mediante FileReader y promesas asíncronas en paralelo (`Promise.all`).</li>
+                <li><strong>Gestión de Base de Datos Dinámica:</strong> Mapea y etiqueta el contenido según el archivo de origen para permitir la eliminación individual por chips.</li>
+                <li><strong>Efecto Ruleta Estilo Casino:</strong> Simula giros tipográficos de alta velocidad mediante intervalos síncronos sincronizados a 500ms.</li>
+                <li><strong>Algoritmo Standard Array:</strong> Distribuye dotes optimizando los dos atributos primarios de la clase obtenida.</li>
+                <li><strong>Inyección de Bonos por Trasfondo:</strong> Suma de manera automática los dotes +2 y +1 correspondientes analizando las opciones válidas.</li>
+            </ul>
+        </div>
+
+        <div class="doc-section">
+            <h2>📂 Estructura de Datos (CSV)</h2>
+            <p>Para expandir tu base de datos con nuevos suplementos o campañas personalizadas, los archivos guardados en la carpeta <code>DB/</code> deben cumplir estrictamente la siguiente estructura de cabecera:</p>
+            <div class="code-block">
+                Tipo,Nombre,Dependencia<br>
+                Clase,Mago,Inteligencia<br>
+                Subclase,Escuela de Evocación,Mago<br>
+                Raza,Elfo,<br>
+                Subraza,Alto Elfo,Elfo<br>
+                Trasfondo,Acólito,Fuerza-Constitución-Carisma
+            </div>
+            <p>Nota: Al separar los atributos con guiones cortos en la columna de dependencia del Trasfondo, el motor de JavaScript los parseará automáticamente como aptos para recibir los dotes.</p>
+        </div>
+    </div>
+    <!-- FOOTER DE LAS PÁGINAS SECUNDARIAS (Sin Copyright, centrado y fijo al fondo) -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../index.html">Volver al Generador</a>
+                <a href="faq.html">Preguntas Frecuentes (FAQ)</a>
+                <a href="documentacion.html">Documentación</a>
+                <a href="https://github.com/Coty1904/D-D-Character-Randomizer" target="_blank" rel="noopener noreferrer">🐱 GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

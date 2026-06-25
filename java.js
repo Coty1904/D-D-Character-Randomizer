@@ -406,7 +406,7 @@ if (generateBtn) {
         
         generateBtn.disabled = true;
         const textoOriginalBoton = generateBtn.innerText;
-        generateBtn.innerText = "SORTEANDO...";
+        generateBtn.innerText = "GENERANDO...";
 
         const claseRandom = getRandomElement(clasesDisponibles);
         let subclaseRandom = "No aplica (Nivel menor a 3)";

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - D&D 2024 Character Randomizer</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/faq-style.css">
+    <link rel="icon" href="../IMG/icon.png">
+    <style>
+        .faq-box { margin-bottom: 25px; padding: 20px; background: #1a1a1a; border-radius: 6px; border-left: 4px solid var(--accent-color); }
+        .faq-box h3 { margin-top: 0; color: var(--text-color); font-size: 1.1rem; }
+        .faq-box p { color: var(--text-secondary); line-height: 1.5; margin-bottom: 0; font-size: 0.95rem; }
+        .btn-back { display: inline-block; margin-bottom: 30px; color: var(--accent-color); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="btn-back">← Volver al Generador</a>
+        <h1>Preguntas Frecuentes (FAQ)</h1>
+        
+        <div class="faq-box">
+            <h3>¿Qué sistemas de rol se pueden usar, puedo usar pathfinder por ejemplo?</h3>
+            <p>Esta página esta enfocada exclusivamente para la creación de personajes aleatoreos de Dungeons and Dragons 5.5 (anteriormente conocida como 2024).</p>
+        </div>
+
+        <div class="faq-box">
+            <h3>¿Qué versión de D&D se pueden usar?</h3>
+            <p>Esta página esta enfocada exclusivamente en la versión de Dungeons and Dragons 5.5 (anteriormente conocida como 2024).</p>
+        </div>
+
+        <div class="faq-box">
+            <h3>¿Cómo puedo añadir mis propios manuales o reglas caseras?</h3>
+            <p>Podés arrastrar o seleccionar cualquier archivo en formato `.csv` usando el botón dashed de carga. El sistema absorberá las opciones y las sumará al pool de generación inmediatamente.</p>
+        </div>
+
+        <div class="faq-box">
+            <h3>¿Qué formato estricto debe tener mi archivo CSV personalizado?</h3>
+            <p>Debe incluir una fila de cabecera con las columnas: <strong>Tipo, Nombre, Dependencia</strong>. Los tipos válidos que el motor reconoce son: Clase, Subclase, Raza, Subraza y Trasfondo.</p>
+        </div>
+
+        <div class="faq-box">
+            <h3>¿Cómo calcula el sistema la distribución de dotes?</h3>
+            <p>Utiliza el bloque oficial 'Standard Array' de D&D 2024 (15, 14, 13, 12, 10, 8). El algoritmo identifica las estadísticas primarias de la clase obtenida y les asigna los valores más altos de forma fija, distribuyendo el resto aleatoriamente para garantizar que el personaje sea completamente jugable.</p>
+        </div>
+
+        <div class="faq-box">
+            <h3>¿Por qué se iluminan dos estadísticas con un borde rojo brillante al generar un personaje?</h3>
+            <p>Indica que esas dos dotes recibieron los aumentos automáticos de tu Trasfondo (+2 y +1). El algoritmo analiza de forma inteligente las opciones válidas que otorga tu Trasfondo y las inyecta en tus estadísticas base más altas para optimizar mecánicamente la build del personaje.</p>
+        </div>
+
+        <div class="faq-box">
+            <h3>¿Por qué a veces la sección de "Subclase" o "Subraza" me dice "No aplica"?</h3>
+            <p>El generador sigue estrictamente las reglas oficiales de progresión de D&D 2024. Las subclases se eligen de forma universal a partir de <strong>Nivel 3</strong>, por lo que si generás un personaje de nivel 1 o 2, la sección se ocultará automáticamente. Con las subrazas ocurre igual: si la Raza sorteada no cuenta con variantes en los manuales activos, el sistema indicará que no aplica.</p>
+        </div>
+
+        <div class="faq-box">
+            <h3>Al desactivar un libro o borrarlo, ¿se pierde el personaje que ya tengo en pantalla?</h3>
+            <p>No. El panel de manuales y los chips manejan exclusivamente la memoria global de opciones disponibles para el sorteo. Si desactivás un libro o eliminás un CSV personalizado, el personaje que tenés visible se mantendrá intacto, pero sus datos ya no se tendrán en cuenta para las próximas generaciones.</p>
+        </div>
+
+        <div class="faq-box">
+            <h3>¿Puedo cargar varios archivos CSV personalizados al mismo tiempo?</h3>
+            <p>¡Sí, totalmente! El cargador de archivos soporta selección múltiple. Podés seleccionar o arrastrar una tanda de varios manuales caseros juntos y el motor asíncrono los procesará e incorporará en paralelo al pool de datos inmediatamente.</p>
+        </div>
+    </div>
+    <!-- FOOTER DE LAS PÁGINAS SECUNDARIAS (Sin Copyright, centrado y fijo al fondo) -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="../index.html">Volver al Generador</a>
+                <a href="faq.html">Preguntas Frecuentes (FAQ)</a>
+                <a href="documentacion.html">Documentación</a>
+                <a href="https://github.com/Coty1904/D-D-Character-Randomizer" target="_blank" rel="noopener noreferrer">🐱 GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

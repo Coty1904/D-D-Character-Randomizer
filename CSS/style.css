@@ -1,0 +1,100 @@
+:root {
+    --bg-color: #1a1a1a;
+    --card-bg: #2d2d2d;
+    --accent-color: #ff3e3e;
+    --text-color: #ffffff;
+    --text-secondary: #b3b3b3;
+    --success-color: #2ecc71;
+}
+
+body {
+    background-color: #0d0d0d;
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* Centra la tarjeta .container en pantallas horizontales */
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    width: 90%;                /* Usa el 90% del espacio disponible si la pantalla se achica */
+    max-width: 1200px;          /* ¡AUMENTADO! El candado sube de 600px a 900px para que sea alargado en PC */
+    box-sizing: border-box;
+    border: 1px solid #3d3d3d;
+    margin: 40px auto;         /* Centrado balanceado arriba y abajo */
+    flex: 1;                   /* Empuja al footer obligatoriamente al piso de la pantalla */
+}
+
+h1 {
+    text-align: center;
+    color: var(--accent-color);
+    margin-top: 0;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* =========================================================================
+   ESTILOS CONTROLADOS DEL FOOTER COMPLETO (PUNTA A PUNTA)
+   ========================================================================= */
+.main-footer {
+    width: 100%;               /* Se estira de lado a lado del monitor */
+    background-color: #111;
+    border-top: 1px solid #252525;
+    padding: 20px 0;
+    margin-top: auto;          /* Anclaje al fondo absoluto */
+    box-sizing: border-box;
+}
+
+.footer-content {
+    width: 100%;
+    max-width: 900px;          /* Sincronizado con el ancho máximo de la tarjeta */
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;   /* Enlaces de navegación centrados */
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.footer-links {
+    display: flex;
+    gap: 32px;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+        align-items: stretch;  /* En celulares anula el centrado de PC y va a ancho completo */
+    }
+    .container {
+        padding: 20px 15px;
+        margin: 10px auto;
+        max-width: 100%;       /* Ocupa todo el ancho en mobile */
+    }
+    .footer-links {
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

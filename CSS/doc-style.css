@@ -1,0 +1,36 @@
+.doc-section { 
+    margin-bottom: 40px; 
+}
+
+.doc-section p, .doc-section li { 
+    color: var(--text-secondary); 
+    line-height: 1.6; 
+    font-size: 0.95rem; 
+}
+
+.doc-section ul { 
+    padding-left: 20px; 
+}
+
+.doc-section li { 
+    margin-bottom: 8px; 
+}
+
+.code-block { 
+    background: #111; 
+    padding: 15px; 
+    border-radius: 6px; 
+    border: 1px solid #333; 
+    font-family: monospace; 
+    color: #00ff66; 
+    overflow-x: auto; 
+    margin: 15px 0; 
+}
+
+.btn-back { 
+    display: inline-block; 
+    margin-bottom: 30px; 
+    color: var(--accent-color); 
+    text-decoration: none; 
+    font-weight: bold; 
+}

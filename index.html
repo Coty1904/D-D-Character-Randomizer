@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Randomizador de Personajes - D&D</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/index-style.css">
     <link rel="icon" href="IMG/icon.png">
     <script src="java.js" defer></script>
 </head>
@@ -64,19 +65,10 @@
         </div>
     </div>
 
-    <!-- Contenedor dinámico para los manuales precargados de la DB -->
     <div class="native-books-container">
         <h3>📖 Manuales Disponibles</h3>
         <div id="native-books-grid" class="native-books-grid">
-            <!-- El JS va a generar las tarjetas y los switches acá adentro de forma automática -->
-        </div>
-    </div>
-
-    <!-- Tus libros subidos por input (Mantené tu estructura) -->
-    <div class="user-books-container" style="margin-top: 20px;">
-        <div id="loaded-files-list">
-            <span class="empty-list-msg">Ningún libro cargado todavía.</span>
-        </div>
+            </div>
     </div>
 
     <div class="form-group">
@@ -95,6 +87,16 @@
     
     <button id="clear-btn" class="btn-secondary" style="margin-top: 10px; background-color: #333; font-size: 0.9rem; padding: 8px;">Limpiar Base de Datos</button>
 </div>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="HTML/faq.html">Preguntas Frecuentes (FAQ)</a>
+            <a href="HTML/documentacion.html">Documentación</a>
+            <a href="https://github.com/Coty1904/D-D-Character-Randomizer" target="_blank" rel="noopener noreferrer">🐱 GitHub</a>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>
