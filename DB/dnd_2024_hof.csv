@@ -1,0 +1,56 @@
+Tipo,Nombre,Dependencia
+Clase,Bardo,Carisma-Destreza
+Subclase,Colegio de la luna,Bardo
+Clase,Clérigo,Sabiduría-Constitución
+Subclase,Dominio del conocimiento,Clérigo
+Clase,Guerrero,Fuerza-Destreza
+Subclase,Banneret,Guerrero
+Clase,Paladín,Fuerza-Carisma
+Subclase,Juramento de de los Genios Nobles,Paladín
+Clase,Explorador,Destreza-Sabiduría
+Subclase,Caminante Invernal,Explorador
+Clase,Pícaro,Destreza-Carisma
+Subclase,Descendiente de los Tres Arcano,Pícaro
+Clase,Hechicero,Carisma-Constitución
+Subclase,Hechicería Piromana,Hechicero
+Clase,Mago,Inteligencia-Destreza
+Subclase,Cantante de las Espadas,Mago
+Raza,Aasimar,
+Raza,Dragonborn,
+Raza,Enano,
+Raza,Elfo,
+Subraza,Drow,Elfo
+Subraza,Alto Elfo,Elfo
+Subraza,Elfo de los Bosques,Elfo
+Raza,Gnomo,
+Subraza,Gnomo de los Bosques,Gnomo
+Subraza,Gnomo de las Rocas,Gnomo
+Raza,Goliath,
+Subraza,Gigante de las Nubes,Goliath
+Subraza,Gigante de Fuego,Goliath
+Subraza,Gigante de Hielo,Goliath
+Subraza,Gigante de las Colinas,Goliath
+Subraza,Gigante de Piedra,Goliath
+Subraza,Gigante de la Tormenta,Goliath
+Raza,Halfling,
+Raza,Humano,
+Raza,Orc,
+Raza,Tiefling,
+Trasfondo,Filibustero Chonodatho,Fuerza-Destreza-Sabiduría
+Trasfondo,Morador de la Magia Muerta,Fuerza-Constitución-Sabiduría
+Trasfondo,Cultista de Dragones,Destreza-Constitución-Inteligencia
+Trasfondo,Guardián del Enclave Esmeralda,Constitución-Inteligencia-Sabiduría
+Trasfondo,Mercenario de los Puños Llameantes,Fuerza-Constitución-Carisma
+Trasfondo,Tocado por Genios,Destreza-Sabiduría-Carisma
+Trasfondo,Arpistas,Destreza-Inteligencia-Carisma
+Trasfondo,Pescador de Hielo,Fuerza-Destreza-Constitución
+Trasfondo,Caballero del Guantelete,Fuerza-Inteligencia-Sabiduría
+Trasfondo,Vasallo de la Alianza de los Señores,Fuerza-Inteligencia-Carisma
+Trasfondo,Peregrino del Pozo de la Luna,Constitución-Sabiduría-Carisma
+Trasfondo,Asaltante de Tumbas Mulhorandi,Destreza-Constitución-Inteligencia
+Trasfondo,Guardian de Mitos,Inteligencia-Sabiduría-Carisma
+Trasfondo,Escudero del Dragon Morado,Fuerza-Sabiduría-Carisma
+Trasfondo,Vagabundo Rashemi,Fuerza-Constitución-Carisma
+Trasfondo,Exiliado Maestro de las Sombras,Destreza-Inteligencia-Carisma
+Trasfondo,Iniciado de Spellfire,Constitución-Inteligencia-Carisma
+Trasfondo,Mercenario Zhentario,Fuerza-Destreza-Carisma

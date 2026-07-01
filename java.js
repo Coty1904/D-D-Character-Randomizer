@@ -160,9 +160,11 @@ function appendCSVToPool(text, origenArchivo) {
     for (let i = 1; i < lines.length; i++) {
         if (!lines[i]) continue;
         const columnas = lines[i].split(',');
-        const tipo = columnas[0] ? columnas[0].trim() : "";
-        const nombre = columnas[1] ? columnas[1].trim() : "";
-        const dependencia = columnas[2] ? columnas[2].trim() : "";
+        
+        // PARCHE DE SEGURIDAD EXTRA: Limpieza estricta de saltos de línea carriage-return (\r)
+        const tipo = columnas[0] ? columnas[0].replace(/\r/g, "").trim() : "";
+        const nombre = columnas[1] ? columnas[1].replace(/\r/g, "").trim() : "";
+        const dependencia = columnas[2] ? columnas[2].replace(/\r/g, "").trim() : "";
 
         if (!tiposValidos.includes(tipo)) continue;
         seProcesaronDatosValidos = true;
@@ -171,12 +173,17 @@ function appendCSVToPool(text, origenArchivo) {
             case "Clase":
                 if (!dataPool.clases[nombre]) {
                     const primarios = dependencia ? dependencia.split('-') : [];
-                    dataPool.clases[nombre] = { subclases: [], primarios: primarios, origen: origenArchivo };
+                    // Modificado: origen pasa a ser un Array (orígenes) para soportar múltiples fuentes
+                    dataPool.clases[nombre] = { subclases: [], primarios: primarios, origenes: [origenArchivo] };
+                } else {
+                    if (!dataPool.clases[nombre].origenes.includes(origenArchivo)) {
+                        dataPool.clases[nombre].origenes.push(origenArchivo);
+                    }
                 }
                 break;
             case "Subclase":
                 if (!dataPool.clases[dependencia]) {
-                    dataPool.clases[dependencia] = { subclases: [], primarios: [], origen: origenArchivo };
+                    dataPool.clases[dependencia] = { subclases: [], primarios: [], origenes: [origenArchivo] };
                 }
                 if (!dataPool.clases[dependencia].subclases.some(s => s.nombre === nombre)) {
                     dataPool.clases[dependencia].subclases.push({ nombre: nombre, origen: origenArchivo });
@@ -184,12 +191,16 @@ function appendCSVToPool(text, origenArchivo) {
                 break;
             case "Raza":
                 if (!dataPool.razas[nombre]) {
-                    dataPool.razas[nombre] = { subrazas: [], origen: origenArchivo };
+                    dataPool.razas[nombre] = { subrazas: [], origenes: [origenArchivo] };
+                } else {
+                    if (!dataPool.razas[nombre].origenes.includes(origenArchivo)) {
+                        dataPool.razas[nombre].origenes.push(origenArchivo);
+                    }
                 }
                 break;
             case "Subraza":
                 if (!dataPool.razas[dependencia]) {
-                    dataPool.razas[dependencia] = { subrazas: [], origen: origenArchivo };
+                    dataPool.razas[dependencia] = { subrazas: [], origenes: [origenArchivo] };
                 }
                 if (!dataPool.razas[dependencia].subrazas.some(s => s.nombre === nombre)) {
                     dataPool.razas[dependencia].subrazas.push({ nombre: nombre, origen: origenArchivo });
@@ -206,16 +217,36 @@ function appendCSVToPool(text, origenArchivo) {
     return seProcesaronDatosValidos;
 }
 
-// Extirpación limpia de datos de la memoria ram global
+// Extirpación limpia por procedencia (Soporta múltiples fuentes sin pisarse)
 function eliminarDatosPorOrigen(nombreLibro) {
     for (const clase in dataPool.clases) {
-        if (dataPool.clases[clase].origen === nombreLibro) { delete dataPool.clases[clase]; }
-        else { dataPool.clases[clase].subclases = dataPool.clases[clase].subclases.filter(s => s.origen !== nombreLibro); }
+        if (dataPool.clases[clase].origenes) {
+            dataPool.clases[clase].origenes = dataPool.clases[clase].origenes.filter(o => o !== nombreLibro);
+            if (dataPool.clases[clase].origenes.length === 0) {
+                delete dataPool.clases[clase];
+                continue;
+            }
+        } else if (dataPool.clases[clase].origen === nombreLibro) {
+            delete dataPool.clases[clase];
+            continue;
+        }
+        dataPool.clases[clase].subclases = dataPool.clases[clase].subclases.filter(s => s.origen !== nombreLibro);
     }
+    
     for (const raza in dataPool.razas) {
-        if (dataPool.razas[raza].origen === nombreLibro) { delete dataPool.razas[raza]; }
-        else { dataPool.razas[raza].subrazas = dataPool.razas[raza].subrazas.filter(s => s.origen !== nombreLibro); }
+        if (dataPool.razas[raza].origenes) {
+            dataPool.razas[raza].origenes = dataPool.razas[raza].origenes.filter(o => o !== nombreLibro);
+            if (dataPool.razas[raza].origenes.length === 0) {
+                delete dataPool.razas[raza];
+                continue;
+            }
+        } else if (dataPool.razas[raza].origen === nombreLibro) {
+            delete dataPool.razas[raza];
+            continue;
+        }
+        dataPool.razas[raza].subrazas = dataPool.razas[raza].subrazas.filter(s => s.origen !== nombreLibro);
     }
+    
     dataPool.trasfondos = dataPool.trasfondos.filter(t => t.origen !== nombreLibro);
 }
 
@@ -244,10 +275,15 @@ window.eliminarLibroIndividual = function(nombreLibro) {
 
 function verificarBotones() {
     if (!generateBtn) return;
+    
     const totalClasesActivas = Object.keys(dataPool.clases).length;
-    const totalTrasfondosActivos = dataPool.trasfondos.length;
-    // Se habilita si hay al menos una clase Y un trasfondo para poder generar correctamente
-    generateBtn.disabled = !(totalClasesActivas > 0 && totalTrasfondosActivos > 0);
+
+    // VALIDACIÓN ATÓMICA: Si quedan clases vivas en el pool, el botón se habilita sí o sí.
+    if (totalClasesActivas > 0) {
+        generateBtn.disabled = false;
+    } else {
+        generateBtn.disabled = true;
+    }
 }
 
 if (clearBtn) {
@@ -256,7 +292,6 @@ if (clearBtn) {
         librosCargadosNombres = [];
         actualizarListaVisual();
         
-        // CORREGIDO: Desactivamos todos los switches nativos recorriendo el array original
         LIBROS_OFICIALES.forEach(nombreArchivo => {
             const el = document.getElementById(`chk-${nombreArchivo.replace('.', '-')}`);
             if (el) el.checked = false;
@@ -315,7 +350,7 @@ function generarStatsOptimizadas(claseNombre, trasfondoNombre) {
     if (containerStats) containerStats.style.display = "flex";
 
     statsNombres.forEach(stat => {
-        const elementoHtml = document.getElementById(trudoctorIds = traductorIds[stat]);
+        const elementoHtml = document.getElementById(traductorIds[stat]);
         if (elementoHtml) {
             elementoHtml.classList.add('stat-rolling');
             const contenedorPadre = elementoHtml.parentElement;
@@ -346,11 +381,10 @@ function generarStatsOptimizadas(claseNombre, trasfondoNombre) {
                 atributosAptosConValor.push({
                     clave: stat,
                     valorBase: statsFinales[stat]
-                });
+                    });
             }
         });
 
-        // Mayor a menor valor para optimizar la build
         atributosAptosConValor.sort((a, b) => b.valorBase - a.valorBase);
 
         let statConMasDos = null;
@@ -482,9 +516,6 @@ if (generateBtn) {
                 if (containerSubclass) containerSubclass.style.display = (level >= 3 && listaSubclases.length > 0) ? "block" : "none";
                 if (containerSubrace) containerSubrace.style.display = (subrazasDeRaza.length > 0) ? "block" : "none";
 
-                // =========================================================================
-                // RE-ACTIVACIÓN: El casino terminó de forma segura, liberamos el botón
-                // =========================================================================
                 generateBtn.disabled = false;
                 generateBtn.innerText = textoOriginalBoton;
 
@@ -492,9 +523,6 @@ if (generateBtn) {
     });
 }
 
-// =========================================================================
-// FUNCIÓN AUXILIAR: RETORNA UN ELEMENTO ALEATORIO DE UN ARRAY
-// =========================================================================
 function getRandomElement(arr) {
     if (!arr || arr.length === 0) return "";
     return arr[Math.floor(Math.random() * arr.length)];
