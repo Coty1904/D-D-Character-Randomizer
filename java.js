@@ -5,10 +5,11 @@ let dataPool = { clases: {}, razas: {}, trasfondos: [] };
 let librosCargadosNombres = []; 
 
 // CANDADO DE ESCALABILIDAD: Agrega acá los nombres de los archivos exactos que pongas en la carpeta DB
-const LIBROS_OFICIALES = [
-    'dnd_2024_phb.csv',
-    'dnd_2024_eberron.csv'
-];
+const LIBROS_OFICIALES = {
+    'dnd_2024_phb.csv': 'Manual del Jugador',
+    'dnd_2024_eberron.csv': 'DND 2024 Eberron',
+    'dnd_2024_hof.csv': 'Héroes de Faerûn'
+};
 
 // Caché de memoria en tiempo de ejecución para evitar re-descargas innecesarias
 let cacheLibrosNativos = {};
@@ -45,10 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const gridNativo = document.getElementById('native-books-grid');
     if (!gridNativo) return;
 
-    // Generamos la interfaz dinámica y disparamos los fetches en paralelo
-    LIBROS_OFICIALES.forEach(nombreArchivo => {
-        // Limpiamos el nombre para mostrar un título amigable
-        const tituloLimpio = nombreArchivo.replace('.csv', '').replace(/_/g, ' ');
+    // Obtenemos los nombres de los archivos reales en un array
+    const archivosAProcesar = Object.keys(LIBROS_OFICIALES);
+
+    archivosAProcesar.forEach(nombreArchivo => {
+        // En vez de limpiar el texto con regex, levantamos el título traducido del objeto
+        const tituloAmigable = LIBROS_OFICIALES[nombreArchivo];
 
         // Creamos la tarjeta del switch de forma dinámica en el DOM
         const card = document.createElement('label');
@@ -56,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.innerHTML = `
             <input type="checkbox" id="chk-${nombreArchivo.replace('.', '-')}" checked>
             <span class="switch-box"></span>
-            <span class="libro-titulo" style="text-transform: uppercase;">${tituloLimpio}</span>
+            <span class="libro-titulo" style="text-transform: uppercase;">${tituloAmigable}</span>
         `;
         gridNativo.appendChild(card);
 
@@ -81,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(() => {
                 console.error(`No se pudo precargar DB/${nombreArchivo}`);
                 checkbox.checked = false;
-                mostrarNotificacion(`No se pudo cargar automáticamente "${nombreArchivo}".`, "error");
+                mostrarNotificacion(`No se pudo cargar automáticamente "${tituloAmigable}".`, "error");
             });
     });
 });
@@ -292,7 +295,8 @@ if (clearBtn) {
         librosCargadosNombres = [];
         actualizarListaVisual();
         
-        LIBROS_OFICIALES.forEach(nombreArchivo => {
+        // Recorremos las llaves del objeto para apagar los elementos gráficos correctamente
+        Object.keys(LIBROS_OFICIALES).forEach(nombreArchivo => {
             const el = document.getElementById(`chk-${nombreArchivo.replace('.', '-')}`);
             if (el) el.checked = false;
         });
